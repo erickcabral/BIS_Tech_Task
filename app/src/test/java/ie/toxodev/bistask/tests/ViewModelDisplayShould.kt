@@ -40,4 +40,12 @@ class ViewModelDisplayShould : BaseJunitTest() {
         this.viewModel.getErrorsResponse()
         verify(mckRepository, times(1)).lvdErrorsResponse
     }
+
+    @Test
+    fun call_fetch_errors_sources_method(){
+        val source = "Dummy Source"
+        val hour = 10
+        viewModel.fetchErrorsSources(source, hour)
+        verify(mckRepository, times(1)).fetchErrorsSources(source, hour)
+    }
 }

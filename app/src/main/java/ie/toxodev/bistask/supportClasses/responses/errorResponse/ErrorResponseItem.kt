@@ -1,4 +1,4 @@
-package ie.toxodev.bistask.supportClasses.responses
+package ie.toxodev.bistask.supportClasses.responses.errorResponse
 
 
 import kotlinx.serialization.SerialName

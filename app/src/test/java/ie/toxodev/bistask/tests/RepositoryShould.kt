@@ -8,12 +8,11 @@ import getValueForTest
 import ie.toxodev.bistask.baseJunitTest.BaseJunitTest
 import ie.toxodev.bistask.supportClasses.BisService
 import ie.toxodev.bistask.supportClasses.Repository
-import ie.toxodev.bistask.supportClasses.responses.ErrorResponse
-import ie.toxodev.bistask.supportClasses.responses.ErrorResponseItem
+import ie.toxodev.bistask.supportClasses.responses.errorResponse.ErrorResponse
+import ie.toxodev.bistask.supportClasses.responses.errorResponse.ErrorResponseItem
 import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertNotNull
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Test
 
 class RepositoryShould : BaseJunitTest() {
@@ -49,7 +48,7 @@ class RepositoryShould : BaseJunitTest() {
     }
 
     @Test
-    fun fetch_error_and_update_live_data() = runBlockingTest {
+    fun fetch_error_and_update_live_data() {
         val hours = 4
         whenever(mckApi.fetchErrors(hours)).thenReturn(flow {
             emit(Result.success(errorResponse))
@@ -66,4 +65,36 @@ class RepositoryShould : BaseJunitTest() {
         }
     }
 
+    // ============================= SOURCE ERROR TEST ============================ //
+    private val sourceResponseItem1 = ErrorSourceResponseItem().apply {
+        date = "18-03-21"
+        this.name = "Source Dummy Name"
+    }
+    private val sourceResponseItem2 = ErrorSourceResponseItem().apply {
+        date = "18-03-21"
+        this.name = "Source Dummy Name 2"
+    }
+    private val sourceResponse = ErrorSourceResponse().apply {
+        this.add(sourceResponseItem1)
+        this.add(sourceResponseItem2)
+    }
+
+    @Test
+    fun fetch_source_errors_and_update_live_data() {
+        val source = "DummySource"
+        val hours = 24
+        whenever(mckApi.fetchSourceErrors(source, hours)).thenReturn(flow {
+            emit(
+                Result.success(
+                    sourceResponse
+                )
+            )
+        })
+        repository.fetchErrorsSources(source, hours)
+        verify(mckApi, times(1)).fetchSourceErrors(source, hours)
+
+        repository.lvdSourceErrorsResponse.getValueForTest().run {
+            assertNotNull(this)
+        }
+    }
 }
