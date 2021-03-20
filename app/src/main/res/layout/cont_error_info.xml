@@ -3,6 +3,13 @@
 
     <data>
 
+        <variable
+            name="errorModel"
+            type="ie.toxodev.bistask.supportClasses.responses.errorResponse.ErrorResponseItem" />
+
+        <variable
+            name="sourceModel"
+            type="ie.toxodev.bistask.supportClasses.responses.sourceErrorsResponse.SourceErrorItem"/>
     </data>
 
     <LinearLayout
@@ -10,8 +17,8 @@
         android:id="@+id/layoutContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bckg_retangular"
         android:layout_margin="8dp"
+        android:background="@drawable/bckg_retangular"
         android:fitsSystemWindows="true"
         android:orientation="vertical">
 

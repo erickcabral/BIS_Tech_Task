@@ -33,4 +33,5 @@ class ViewModelDisplay @Inject constructor(private val repository: Repository) :
 
     // ================== GETTERS ==================== //
     fun getErrorsResponse() = this.repository.lvdErrorsResponse
+    fun getSourceErrorResponse() = this.repository.lvdSourceErrorsResponse
 }

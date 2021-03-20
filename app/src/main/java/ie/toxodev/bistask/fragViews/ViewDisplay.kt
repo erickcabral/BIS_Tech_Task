@@ -7,9 +7,13 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import dagger.hilt.android.AndroidEntryPoint
 import ie.toxodev.bistask.R
 import ie.toxodev.bistask.databinding.ViewDisplayBinding
+import ie.toxodev.bistask.recyclerAdapters.AdapterError
+import ie.toxodev.bistask.recyclerAdapters.AdapterSources
+
 @AndroidEntryPoint
 class ViewDisplay : Fragment() {
     companion object {
@@ -29,8 +33,32 @@ class ViewDisplay : Fragment() {
             container, false
         )
 
-//        this.vModel.fetchErrors(10)
-        this.vModel.fetchErrorsSources("MSTProc-PULSOLDSA01", 4)
+        this.initializeLiveData()
+
+        this.vModel.fetchErrors(10)
+        this.vModel.fetchErrorsSources("MSTProc-PULSOLDSA01", 10)
         return this.vBinder.root
+    }
+
+
+    private fun initializeLiveData() {
+        this.vModel.getSourceErrorResponse().observe(viewLifecycleOwner, Observer { result ->
+            result.onSuccess {
+                AdapterSources(it).run {
+                    vBinder.sourceAdapter = this
+                }
+            }.onFailure {
+
+            }
+        })
+        this.vModel.getErrorsResponse().observe(viewLifecycleOwner, Observer { result ->
+            result.onFailure {
+
+            }.onSuccess {
+                AdapterError(it).run {
+                    vBinder.errorAdapter = this
+                }
+            }
+        })
     }
 }

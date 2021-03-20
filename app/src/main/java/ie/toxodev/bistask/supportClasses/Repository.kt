@@ -3,6 +3,7 @@ package ie.toxodev.bistask.supportClasses
 import androidx.lifecycle.MutableLiveData
 import ie.toxodev.bistask.supportClasses.responses.errorResponse.ErrorResponse
 import ie.toxodev.bistask.supportClasses.responses.sourceErrorsResponse.SourceErrorsResponse
+import ie.toxodev.bistask.supportClasses.service.BisService
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect

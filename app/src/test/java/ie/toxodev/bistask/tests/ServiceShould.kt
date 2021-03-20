@@ -5,9 +5,9 @@ import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import ie.toxodev.bistask.baseJunitTest.BaseJunitTest
-import ie.toxodev.bistask.supportClasses.BisAPI
-import ie.toxodev.bistask.supportClasses.BisService
 import ie.toxodev.bistask.supportClasses.responses.errorResponse.ErrorResponse
+import ie.toxodev.bistask.supportClasses.service.BisAPI
+import ie.toxodev.bistask.supportClasses.service.BisService
 import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertNotNull
 import kotlinx.coroutines.flow.collect

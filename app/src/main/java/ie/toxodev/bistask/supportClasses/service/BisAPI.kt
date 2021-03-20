@@ -1,4 +1,4 @@
-package ie.toxodev.bistask.supportClasses
+package ie.toxodev.bistask.supportClasses.service
 
 import ie.toxodev.bistask.supportClasses.responses.errorResponse.ErrorResponse
 import ie.toxodev.bistask.supportClasses.responses.sourceErrorsResponse.SourceErrorsResponse

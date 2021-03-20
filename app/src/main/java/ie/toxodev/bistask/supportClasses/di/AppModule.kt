@@ -4,9 +4,9 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import ie.toxodev.bistask.supportClasses.BisAPI
-import ie.toxodev.bistask.supportClasses.BisService
 import ie.toxodev.bistask.supportClasses.Repository
+import ie.toxodev.bistask.supportClasses.service.BisAPI
+import ie.toxodev.bistask.supportClasses.service.BisService
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit

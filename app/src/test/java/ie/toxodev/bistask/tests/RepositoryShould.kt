@@ -6,10 +6,10 @@ import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import getValueForTest
 import ie.toxodev.bistask.baseJunitTest.BaseJunitTest
-import ie.toxodev.bistask.supportClasses.BisService
 import ie.toxodev.bistask.supportClasses.Repository
 import ie.toxodev.bistask.supportClasses.responses.errorResponse.ErrorResponse
 import ie.toxodev.bistask.supportClasses.responses.errorResponse.ErrorResponseItem
+import ie.toxodev.bistask.supportClasses.service.BisService
 import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertNotNull
 import kotlinx.coroutines.flow.flow
