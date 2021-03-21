@@ -1,7 +1,7 @@
 package ie.toxodev.bistask.supportClasses.service
 
-import ie.toxodev.bistask.supportClasses.responses.errorResponse.ErrorResponse
-import ie.toxodev.bistask.supportClasses.responses.sourceErrorsResponse.SourceErrorsResponse
+import ie.toxodev.bistask.supportClasses.responses.errorResponse.ErrorDetailResponse
+import ie.toxodev.bistask.supportClasses.responses.sourceErrorResponse.ErrorSourcesResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -9,9 +9,9 @@ import javax.inject.Inject
 
 class BisService @Inject constructor(private val bisAPI: BisAPI) {
 
-    fun fetchErrors(hours: Int): Flow<Result<ErrorResponse>> {
-        return flow<Result<ErrorResponse>> {
-            bisAPI.fetchErrors(hours).run {
+    suspend fun fetchErrorSources(hours: Int): Flow<Result<ErrorSourcesResponse>> {
+        return flow<Result<ErrorSourcesResponse>> {
+            bisAPI.fetchErrorSources(hours).run {
                 if (this.isSuccessful && this.body() != null) {
                     this.body()!!.also { body ->
                         emit(Result.success(body))
@@ -25,14 +25,14 @@ class BisService @Inject constructor(private val bisAPI: BisAPI) {
         }
     }
 
-   suspend fun fetchSourceErrors(source: String, hours: Int) : Flow<Result<SourceErrorsResponse>>{
-        return flow <Result<SourceErrorsResponse>>{
-            bisAPI.fetchSourceErrors(source, hours).run {
-                if (this.isSuccessful && this.body()!=null){
+    suspend fun fetchErrorDetails(source: String, hours: Int): Flow<Result<ErrorDetailResponse>> {
+        return flow<Result<ErrorDetailResponse>> {
+            bisAPI.fetchSourceErrorDetails(source, hours).run {
+                if (this.isSuccessful && this.body() != null) {
                     this.body()!!.also {
                         emit(Result.success(it))
                     }
-                }else{
+                } else {
                     emit(Result.failure(Throwable("Source Error Response failed")))
                 }
             }

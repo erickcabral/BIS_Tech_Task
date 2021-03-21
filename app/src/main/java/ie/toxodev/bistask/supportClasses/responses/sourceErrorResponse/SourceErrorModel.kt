@@ -1,13 +1,13 @@
-package ie.toxodev.bistask.supportClasses.responses.errorResponse
+package ie.toxodev.bistask.supportClasses.responses.sourceErrorResponse
 
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-class ErrorResponseItem(
+class SourceErrorModel(
     @SerialName("noErrors")
-    var noErrors: Int = 0,
+    var noErrors: Int,
     @SerialName("source")
-    var source: String = ""
+    var source: String
 )

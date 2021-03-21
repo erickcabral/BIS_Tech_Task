@@ -4,7 +4,7 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
 import ie.toxodev.bistask.baseJunitTest.BaseJunitTest
-import ie.toxodev.bistask.fragViews.ViewModelDisplay
+import ie.toxodev.bistask.fragViews.sourcesViewer.ViewModelDisplay
 import ie.toxodev.bistask.supportClasses.Repository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -31,21 +31,21 @@ class ViewModelDisplayShould : BaseJunitTest() {
     @Test
     fun call_fetch_repository_fetch_errors_method() = runBlockingTest {
         val hours = 10
-        viewModel.fetchErrors(hours)
-        verify(mckRepository, times(1)).fetchErrors(hours)
+        viewModel.fetchErrorSources(hours)
+        verify(mckRepository, times(1)).fetchErrorSources(hours)
     }
 
     @Test
     fun get_errors_response() {
-        this.viewModel.getErrorsResponse()
-        verify(mckRepository, times(1)).lvdErrorsResponse
+        this.viewModel.getErrorSources()
+        verify(mckRepository, times(1)).lvdErrorSourcesResponse
     }
 
     @Test
     fun call_fetch_errors_sources_method(){
         val source = "Dummy Source"
         val hour = 10
-        viewModel.fetchErrorsSources(source, hour)
-        verify(mckRepository, times(1)).fetchErrorsSources(source, hour)
+        viewModel.fetchErrorDetails(source, hour)
+        verify(mckRepository, times(1)).fetchErrorDetails(source, hour)
     }
 }

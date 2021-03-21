@@ -5,7 +5,8 @@ import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import ie.toxodev.bistask.baseJunitTest.BaseJunitTest
-import ie.toxodev.bistask.supportClasses.responses.errorResponse.ErrorResponse
+import ie.toxodev.bistask.supportClasses.responses.errorResponse.ErrorDetailResponse
+import ie.toxodev.bistask.supportClasses.responses.sourceErrorResponse.ErrorSourcesResponse
 import ie.toxodev.bistask.supportClasses.service.BisAPI
 import ie.toxodev.bistask.supportClasses.service.BisService
 import junit.framework.Assert.assertEquals
@@ -24,33 +25,36 @@ class ServiceShould : BaseJunitTest() {
         this.service = BisService(mckAPI)
     }
 
+    // ==================== ERROR RESPONSE TEST ================= //
+    private val sourcesResponse = ErrorSourcesResponse()
     @Test
-    fun fetch_error_from_data_base() = runBlockingTest {
+    fun fetch_error_sources_from_server() = runBlockingTest {
         val hours = 4
-        whenever(mckAPI.fetchErrors(hours)).thenReturn(
-            Response.success(ErrorResponse())
+        whenever(mckAPI.fetchErrorSources(hours)).thenReturn(
+            Response.success(sourcesResponse)
         )
-        service.fetchErrors(hours).collect {
-            verify(mckAPI, times(1)).fetchErrors(hours)
+        service.fetchErrorSources(hours).collect {
+            verify(mckAPI, times(1)).fetchErrorSources(hours)
             assertNotNull(it)
         }
     }
 
     // ==================== SOURCE RESPONSE TEST ================= //
 
+    private val errorDetailResponse = ErrorDetailResponse()
     @Test
     fun fetch_source_errors_from_server() = runBlockingTest {
         val source = "Dummy Source"
         val hours = 20
-        val sourceResponse = ErrorSourceResponse()
+        val sourceResponse = ErrorSourcesResponse()
         whenever(
-            mckAPI.fetchSourceErrors(
+            mckAPI.fetchSourceErrorDetails(
                 source,
                 hours
             )
-        ).thenReturn(Response.success(sourceResponse))
-        service.fetchSourceErrors(source, hours).collect {
-            verify(mckAPI, times(1)).fetchSourceErrors(source, hours)
+        ).thenReturn(Response.success(errorDetailResponse))
+        service.fetchErrorDetails(source, hours).collect {
+            verify(mckAPI, times(1)).fetchSourceErrorDetails(source, hours)
             assertNotNull(it)
             assertEquals(sourceResponse, it.getOrNull())
         }

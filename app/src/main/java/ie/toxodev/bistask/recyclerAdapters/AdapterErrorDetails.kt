@@ -6,10 +6,10 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import ie.toxodev.bistask.R
 import ie.toxodev.bistask.databinding.ContErrorInfoBinding
-import ie.toxodev.bistask.supportClasses.responses.errorResponse.ErrorResponse
+import ie.toxodev.bistask.supportClasses.responses.errorResponse.ErrorDetailResponse
 
-class AdapterError(private val errorResponse: ErrorResponse) :
-    RecyclerView.Adapter<AdapterError.ViewHolderErrors>() {
+class AdapterErrorDetails(private val errorResponse: ErrorDetailResponse) :
+    RecyclerView.Adapter<AdapterErrorDetails.ViewHolderErrors>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolderErrors {
         LayoutInflater.from(parent.context).run {

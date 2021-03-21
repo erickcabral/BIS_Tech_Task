@@ -1,36 +1,35 @@
 package ie.toxodev.bistask.supportClasses
 
 import androidx.lifecycle.MutableLiveData
-import ie.toxodev.bistask.supportClasses.responses.errorResponse.ErrorResponse
-import ie.toxodev.bistask.supportClasses.responses.sourceErrorsResponse.SourceErrorsResponse
+import ie.toxodev.bistask.supportClasses.responses.errorResponse.ErrorDetailResponse
+import ie.toxodev.bistask.supportClasses.responses.sourceErrorResponse.ErrorSourcesResponse
 import ie.toxodev.bistask.supportClasses.service.BisService
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.plus
 
 class Repository(private val service: BisService) {
     var scope: CoroutineScope? = null
-    val lvdErrorsResponse: MutableLiveData<Result<ErrorResponse>> = MutableLiveData()
-    val lvdSourceErrorsResponse: MutableLiveData<Result<SourceErrorsResponse>> = MutableLiveData()
+    val lvdErrorSourcesResponse: MutableLiveData<Result<ErrorSourcesResponse>> = MutableLiveData()
+    val lvdErrorDetailsResponse: MutableLiveData<Result<ErrorDetailResponse>> = MutableLiveData()
 
     fun setupScope(scope: CoroutineScope, dispatcher: CoroutineDispatcher) {
-        this.scope = scope.plus(dispatcher)
+        this.scope = CoroutineScope(scope.coroutineContext + dispatcher)
     }
 
-    fun fetchErrors(hours: Int) {
+    fun fetchErrorSources(hours: Int) {
         this.scope?.launch {
-            service.fetchErrors(hours).collect {
-                lvdErrorsResponse.postValue(it)
+            service.fetchErrorSources(hours).collect {
+                lvdErrorSourcesResponse.postValue(it)
             }
         }
     }
 
-    fun fetchErrorsSources(source: String, hour: Int) {
+    fun fetchErrorDetails(source: String, hour: Int) {
         this.scope?.launch {
-            service.fetchSourceErrors(source, hour).collect {
-                lvdSourceErrorsResponse.postValue(it)
+            service.fetchErrorDetails(source, hour).collect {
+                lvdErrorDetailsResponse.postValue(it)
             }
         }
     }

@@ -1,11 +1,11 @@
-package ie.toxodev.bistask.supportClasses.responses.sourceErrorsResponse
+package ie.toxodev.bistask.supportClasses.responses.errorResponse
 
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-class SourceErrorItem(
+class ErrorDetailModel(
     @SerialName("date")
     var date: String = "",
     @SerialName("name")

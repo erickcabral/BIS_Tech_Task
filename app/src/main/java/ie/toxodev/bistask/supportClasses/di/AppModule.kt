@@ -20,18 +20,19 @@ object AppModule {
 
     @Provides
     fun bodyInterceptor() = HttpLoggingInterceptor().apply {
-        this.level = HttpLoggingInterceptor.Level.BODY
+        this.level = HttpLoggingInterceptor.Level.BASIC
     }
 
     @Singleton
     @Provides
     fun httpClient(bodyInterceptor: HttpLoggingInterceptor) =
         OkHttpClient().newBuilder()
-            .connectTimeout(2, TimeUnit.SECONDS)
-            .writeTimeout(2, TimeUnit.SECONDS)
-            .readTimeout(2, TimeUnit.SECONDS)
-            .retryOnConnectionFailure(true)
             .addInterceptor(bodyInterceptor)
+            .readTimeout(5, TimeUnit.SECONDS)
+            .connectTimeout(10, TimeUnit.SECONDS)
+            .retryOnConnectionFailure(true)
+            .writeTimeout(5, TimeUnit.SECONDS)
+            .followSslRedirects(true)
             .build()
 
     @Singleton

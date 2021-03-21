@@ -1,7 +1,7 @@
 package ie.toxodev.bistask.supportClasses.service
 
-import ie.toxodev.bistask.supportClasses.responses.errorResponse.ErrorResponse
-import ie.toxodev.bistask.supportClasses.responses.sourceErrorsResponse.SourceErrorsResponse
+import ie.toxodev.bistask.supportClasses.responses.errorResponse.ErrorDetailResponse
+import ie.toxodev.bistask.supportClasses.responses.sourceErrorResponse.ErrorSourcesResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -10,13 +10,13 @@ import retrofit2.http.Query
 interface BisAPI {
 
     @GET("OpsErrors/{hours}")
-    suspend fun fetchErrors(
+    suspend fun fetchErrorSources(
         @Path("hours") hours: Int
-    ): Response<ErrorResponse>
+    ): Response<ErrorSourcesResponse>
 
     @GET("OpsErrors/{source}/errors")
-    suspend fun fetchSourceErrors(
+    suspend fun fetchSourceErrorDetails(
         @Path("source") source: String,
         @Query("hours") hours: Int
-    ): Response<SourceErrorsResponse>
+    ): Response<ErrorDetailResponse>
 }

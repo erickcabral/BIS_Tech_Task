@@ -7,7 +7,26 @@
 
     <fragment
         android:id="@+id/viewDisplay"
-        android:name="ie.toxodev.bistask.fragViews.ViewDisplay"
+        android:name="ie.toxodev.bistask.fragViews.sourcesViewer.ViewDisplay"
         android:label="Errors Display"
-        tools:layout="@layout/view_display" />
+        tools:layout="@layout/view_display" >
+        <action
+            android:id="@+id/toErrorDetails"
+            app:destination="@id/viewErrorDetail" />
+    </fragment>
+    <fragment
+        tools:layout="@layout/view_errors_detailed"
+        android:id="@+id/viewErrorDetail"
+        android:name="ie.toxodev.bistask.fragViews.errorsDetailViewer.ViewErrorDetail"
+        android:label="Error Details" >
+        <argument
+            android:name="SOURCE"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="null" />
+        <argument
+            android:name="HOURS"
+            app:argType="integer"
+            android:defaultValue="0" />
+    </fragment>
 </navigation>
