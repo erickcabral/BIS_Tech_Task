@@ -36,6 +36,7 @@ class ViewDisplay : Fragment(), AdapterErrorSourcesModel.IContErrorSourceListene
         activity?.let {
             initializeLiveData(it)
         }
+
     }
 
     override fun onCreateView(
@@ -52,7 +53,7 @@ class ViewDisplay : Fragment(), AdapterErrorSourcesModel.IContErrorSourceListene
             this.openTimeStampDialog()
         }
 
-        vModel.checkTimeStamp()
+        vModel.checkCache()
 
         return this.vBinder.root
     }
@@ -66,51 +67,43 @@ class ViewDisplay : Fragment(), AdapterErrorSourcesModel.IContErrorSourceListene
 
 
     private fun initializeLiveData(fragmentActivity: FragmentActivity) {
+
+        this.vModel.lvdHours.observe(fragmentActivity, Observer {
+            if (it == 0) {
+                this.openTimeStampDialog()
+            } else {
+                this.vBinder.hours = it
+                this.vModel.fetchErrorSources(it)
+            }
+        })
+
         this.vModel.getErrorSources().observe(fragmentActivity, Observer { result ->
             result.onSuccess {
-                vModel.errorSourcesResponse = it
-                AdapterErrorSourcesModel(it, this).run {
-                    vBinder.adapterModel = this
-                }
+                vBinder.adapterModel = AdapterErrorSourcesModel(it, this)
             }.onFailure {
                 OutputManager.displayAlertPositiveOnly(
                     requireContext(),
-                    "Server Error",
+                    "Server Error:",
                     it.message.toString()
                 )
             }
         })
 
-        this.vModel.lvdHours.observe(fragmentActivity, Observer { hours ->
-            if (hours == 0) {
-                this.openTimeStampDialog()
-            } else {
-                this.vBinder.hours = hours
-                this.vModel.fetchErrorSources(hours)
-            }
-        })
-
-        this.vModel.lvdNewStampResult.observe(fragmentActivity, Observer { success ->
-            if (success) {
-                OutputManager.displayAlertPositiveOnly(
-                    requireContext(),
-                    "Timestamp Saving result:",
-                    "Success"
-                )
-            } else {
-                OutputManager.displayAlertPositiveOnly(
-                    requireContext(),
-                    "Timestamp Saving result:",
-                    "Failed"
-                )
+        this.vModel.lvdHourSavingResult.observe(fragmentActivity, Observer { isSuccess->
+            if(isSuccess){
+                OutputManager.displayAlertPositiveOnly(requireContext(), "Timestamp saving result:",
+                "Timestamp saved successfully.")
+            }else{
+                OutputManager.displayAlertPositiveOnly(requireContext(), "Timestamp saving result:",
+                    "Timestamp saving failed.")
             }
         })
     }
 
     override fun onItemClicked(view: View) {
-        view.tag.toString().run {
-            vModel.lvdHours.value?.let { hours ->
-                ViewDisplayDirections.toErrorDetails(this, hours).run {
+        view.tag.toString().also { source ->
+            vModel.lvdHours.value?.let {
+                ViewDisplayDirections.toErrorDetails(source, it).run {
                     findNavController().navigate(this)
                 }
             }
@@ -121,7 +114,6 @@ class ViewDisplay : Fragment(), AdapterErrorSourcesModel.IContErrorSourceListene
         v?.let {
             when (it.id) {
                 R.id.btnPositive -> setNewTimeStamp(dialog)
-                else -> return
             }
         }
     }

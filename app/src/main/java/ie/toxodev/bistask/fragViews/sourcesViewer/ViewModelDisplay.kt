@@ -2,13 +2,12 @@ package ie.toxodev.bistask.fragViews.sourcesViewer
 
 import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import ie.toxodev.bistask.supportClasses.Repository
 import ie.toxodev.bistask.supportClasses.responses.sourceErrorResponse.ErrorSourcesResponse
-import ie.toxodev.bistask.supportClasses.responses.sourceErrorResponse.SourceErrorModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -17,23 +16,17 @@ import javax.inject.Inject
 @HiltViewModel
 class ViewModelDisplay @Inject constructor(
     private val sharedPreferences: SharedPreferences,
-    private val repository: Repository,
-    private val savedStateHandle: SavedStateHandle
+    private val repository: Repository
 ) : ViewModel() {
 
     companion object {
         const val TAG = "<<_VM_SOURCE_ERRORS_>>"
-        const val TIMESTAMP = "TIMESTAMP"
         const val HOURS = "HOURS"
         const val SAVING_RESULT = "SAVED_RESULT"
-        const val SOURCES = "SOURCES"
     }
 
-    var errorSourcesResponse: List<SourceErrorModel> = emptyList()
-
-    val lvdHours = this.savedStateHandle.getLiveData(HOURS, 0)
-
-    val lvdNewStampResult = this.savedStateHandle.getLiveData<Boolean>(SAVING_RESULT)
+    val lvdHourSavingResult: MutableLiveData<Boolean> = MutableLiveData()
+    var lvdHours: MutableLiveData<Int> = MutableLiveData()
 
     init {
         setupRepository(viewModelScope, Dispatchers.IO)
@@ -51,18 +44,18 @@ class ViewModelDisplay @Inject constructor(
         this.repository.fetchErrorDetails(source, hour)
     }
 
-    fun checkTimeStamp() {
-        sharedPreferences.getInt(TIMESTAMP, 0).run {
-            savedStateHandle[HOURS] = this
+    fun checkCache() {
+        sharedPreferences.getInt(HOURS, 0).run {
+            lvdHours.value = this
         }
     }
 
-    fun setNewTimestamp(newStamp: Int) {
-        this.sharedPreferences.edit().putInt(TIMESTAMP, newStamp).commit().also { isSuccess ->
+    fun setNewTimestamp(hour: Int) {
+        this.sharedPreferences.edit().putInt(HOURS, hour).commit().also { isSuccess ->
             if (isSuccess) {
-                savedStateHandle[HOURS] = newStamp
+                lvdHours.value = hour
             }
-            this.savedStateHandle[SAVING_RESULT] = isSuccess
+            lvdHourSavingResult.value = isSuccess
         }
     }
 
