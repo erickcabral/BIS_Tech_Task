@@ -61,6 +61,7 @@ class ViewDisplay : Fragment(), AdapterErrorSourcesModel.IContErrorSourceListene
     private fun openTimeStampDialog() {
         ViewDialog(requireContext(), this).createDialog().also {
             this.dialog = it
+            this.dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
             this.dialog.show()
         }
     }
