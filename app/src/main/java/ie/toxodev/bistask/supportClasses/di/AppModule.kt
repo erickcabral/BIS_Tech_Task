@@ -1,8 +1,11 @@
 package ie.toxodev.bistask.supportClasses.di
 
+import android.content.Context
+import android.content.SharedPreferences
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import ie.toxodev.bistask.supportClasses.Repository
 import ie.toxodev.bistask.supportClasses.service.BisAPI
@@ -49,4 +52,8 @@ object AppModule {
     @Provides
     fun providesRepository(service: BisService) = Repository(service)
 
+    @Singleton
+    @Provides
+    fun providesSharedPreferences(@ApplicationContext context: Context): SharedPreferences =
+        context.getSharedPreferences("SharedPrefs", Context.MODE_PRIVATE)
 }

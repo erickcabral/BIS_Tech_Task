@@ -7,7 +7,8 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.FragmentActivity
+import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.textfield.TextInputEditText
@@ -26,9 +27,16 @@ class ViewDisplay : Fragment(), AdapterErrorSourcesModel.IContErrorSourceListene
     }
 
     private lateinit var vBinder: ViewDisplayBinding //Layout Binder
-    private val vModel: ViewModelDisplay by viewModels()
+    private val vModel: ViewModelDisplay by hiltNavGraphViewModels(R.id.navigation_main)
 
     private lateinit var dialog: AlertDialog
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        activity?.let {
+            initializeLiveData(it)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,22 +49,26 @@ class ViewDisplay : Fragment(), AdapterErrorSourcesModel.IContErrorSourceListene
         )
 
         this.vBinder.btnTimeStamp.setOnClickListener { btn ->
-            ViewDialog(requireContext(), this).createDialog().also {
-                this.dialog = it
-                this.dialog.show()
-            }
+            this.openTimeStampDialog()
         }
 
-        this.initializeLiveData()
+        vModel.checkTimeStamp()
 
-        this.vModel.fetchErrorSources(3)
         return this.vBinder.root
     }
 
+    private fun openTimeStampDialog() {
+        ViewDialog(requireContext(), this).createDialog().also {
+            this.dialog = it
+            this.dialog.show()
+        }
+    }
 
-    private fun initializeLiveData() {
-        this.vModel.getErrorSources().observe(viewLifecycleOwner, Observer { result ->
+
+    private fun initializeLiveData(fragmentActivity: FragmentActivity) {
+        this.vModel.getErrorSources().observe(fragmentActivity, Observer { result ->
             result.onSuccess {
+                vModel.errorSourcesResponse = it
                 AdapterErrorSourcesModel(it, this).run {
                     vBinder.adapterModel = this
                 }
@@ -69,8 +81,29 @@ class ViewDisplay : Fragment(), AdapterErrorSourcesModel.IContErrorSourceListene
             }
         })
 
-        this.vModel.lvdHours.observe(viewLifecycleOwner, Observer {
-            this.vBinder.hours = it
+        this.vModel.lvdHours.observe(fragmentActivity, Observer { hours ->
+            if (hours == 0) {
+                this.openTimeStampDialog()
+            } else {
+                this.vBinder.hours = hours
+                this.vModel.fetchErrorSources(hours)
+            }
+        })
+
+        this.vModel.lvdNewStampResult.observe(fragmentActivity, Observer { success ->
+            if (success) {
+                OutputManager.displayAlertPositiveOnly(
+                    requireContext(),
+                    "Timestamp Saving result:",
+                    "Success"
+                )
+            } else {
+                OutputManager.displayAlertPositiveOnly(
+                    requireContext(),
+                    "Timestamp Saving result:",
+                    "Failed"
+                )
+            }
         })
     }
 
@@ -96,13 +129,20 @@ class ViewDisplay : Fragment(), AdapterErrorSourcesModel.IContErrorSourceListene
     private fun setNewTimeStamp(dialog: AlertDialog) {
         dialog.run {
             (this.findViewById(R.id.inpTextView) as? TextInputEditText)?.run {
-                if (!this.text.isNullOrEmpty()) {
-                    this.text.toString().run {
-                        vModel.fetchErrorSources(this.toInt())
+                when {
+                    this.text.isNullOrEmpty() -> {
+                        this.error = "Field can't be empty"
+                        return
                     }
-                } else {
-                    this.error = "Field can't be empty"
-                    return
+                    this.text.toString() == "0" -> {
+                        this.error = "Timestamp must be greater than 0"
+                        return
+                    }
+                    else -> {
+                        this.text.toString().run {
+                            vModel.setNewTimestamp(this.toInt())
+                        }
+                    }
                 }
             }
             this.dismiss()

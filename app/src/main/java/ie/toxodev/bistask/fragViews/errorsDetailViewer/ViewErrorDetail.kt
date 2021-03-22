@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.lifecycle.Observer
 import dagger.hilt.android.AndroidEntryPoint
 import ie.toxodev.bistask.R
@@ -22,8 +22,7 @@ class ViewErrorDetail : Fragment() {
     }
 
     private lateinit var vBinder: ViewErrorsDetailedBinding //Layout Binder
-    private val vModel: ViewModelErrorDetails by viewModels()
-
+    private val vModel: ViewModelErrorDetails by hiltNavGraphViewModels(R.id.navigation_main)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -62,7 +61,7 @@ class ViewErrorDetail : Fragment() {
                     vBinder.errorDetailsAdapter = this
                 }
             }.onFailure {
-
+                TODO("Not Implemented Yet")
             }
         })
     }
