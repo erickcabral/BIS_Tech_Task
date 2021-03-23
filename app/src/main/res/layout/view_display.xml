@@ -31,7 +31,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:gravity="center"
-            android:text="BIS Task by Erick Cabral"
+            android:text="@string/txt_bis_task_by_erick_cabral"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
